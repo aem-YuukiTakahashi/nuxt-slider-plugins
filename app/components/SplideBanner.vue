@@ -16,38 +16,7 @@ const splideOptions = {
   updateOnMove: true,
 };
 
-const slide = [
-  {
-    id: 1,
-    src: '/images/img1.png',
-    link: '/',
-  },
-  {
-    id: 2,
-    src: '/images/img2.png',
-    link: '/',
-  },
-  {
-    id: 3,
-    src: '/images/img3.png',
-    link: '/',
-  },
-  {
-    id: 4,
-    src: '/images/img1.png',
-    link: '/',
-  },
-  {
-    id: 5,
-    src: '/images/img2.png',
-    link: '/',
-  },
-  {
-    id: 6,
-    src: '/images/img3.png',
-    link: '/',
-  },
-];
+const slide = useBannerSlides()
 
 onMounted(async () => {
   await nextTick();
