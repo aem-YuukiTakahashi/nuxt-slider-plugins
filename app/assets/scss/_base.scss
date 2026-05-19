@@ -1,0 +1,54 @@
+html {
+  font-size: 62.5%; // 1rem = 10px
+}
+
+body {
+  font-weight: 400;
+  font-size: 1.4rem; // サイトのベースの文字サイズ
+  line-height: 1.5714285714285714;
+  word-wrap: break-word;
+  -webkit-text-size-adjust: 100%; // 横にした時の文字拡大を防ぐ
+  color: #000;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: #fff;
+}
+
+img {
+  vertical-align: bottom;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  outline: none;
+  text-decoration: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+/* ========================================
+    anti-aliasing
+======================================== */
+body,
+html {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: unset;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 2dppx) {
+
+  body,
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
