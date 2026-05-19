@@ -59,7 +59,6 @@ const slide = [
         :loop="true"
         :navigation="{ nextEl: '.banner-list__next', prevEl: '.banner-list__prev' }"
         :pagination="{ el: '.banner-list__pagination', clickable: true }"
-        :breakpoints="{ 960: { spaceBetween: 30 } }"
         @swiper="onSwiper"
       >
         <SwiperSlide
@@ -88,19 +87,9 @@ const slide = [
     position: relative;
     display: block;
     margin: auto;
-    @include mq-pc {
-      width: 320px;
-      height: 120px;
-    }
-    @include mq-mb {
-      width: 256px;
-      height: 96px;
-    }
     img {
-      @include center;
       width: 100%;
       height: 100%;
-      object-fit: cover;
     }
   }
   &__link {

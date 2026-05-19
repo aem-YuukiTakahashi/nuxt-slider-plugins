@@ -5,6 +5,10 @@
   <section class="section">
     <h2>SPLIDE BANNER</h2>
 
+    <div class="banner">
+      <SplideBanner />
+    </div>
+
     <div class="item">
       <nuxtLink to="/swiper" class="item__link">
         SWIPER BANNER
@@ -16,7 +20,7 @@
 
 <style lang="scss" scoped>
 .section {
-  padding: 40px 20px;
+  padding: 40px 0px;
 }
 
 h2 {
@@ -43,5 +47,9 @@ h2 {
     line-height: 1;
     margin: 0 auto;
   }
+}
+
+.banner {
+  margin: 0 auto 60px;
 }
 </style>
