@@ -3,10 +3,10 @@
 
 <template>
   <section class="section">
-    <h2>SPLIDE BANNER</h2>
+    <h2>EMBLA CAROUSEL</h2>
 
     <div class="banner">
-      <SplideBanner />
+      <EmblaCarousel />
     </div>
 
     <div class="item">
@@ -16,10 +16,11 @@
     </div>
 
     <div class="item">
-      <nuxtLink to="/embla" class="item__link">
-        EMBLA CAROUSEL
+      <nuxtLink to="/splide" class="item__link">
+        SPLIDE BANNER
       </nuxtLink>
     </div>
+
   </section>
 </template>
 

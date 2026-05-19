@@ -16,6 +16,12 @@
         SPLIDE BANNER
       </nuxtLink>
     </div>
+
+    <div class="item">
+      <nuxtLink to="/embla" class="item__link">
+        EMBLA CAROUSEL
+      </nuxtLink>
+    </div>
   </section>
 </template>
 
