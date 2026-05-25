@@ -122,15 +122,6 @@ onUnmounted(() => {
         <li>2026.04.22 活動に関するお知らせ（サンプル）</li>
       </ul>
     </section>
-
-    <footer class="fv-page__footer">
-      <NuxtLink
-        to="/"
-        class="fv-page__back"
-      >
-        トップへ戻る
-      </NuxtLink>
-    </footer>
   </main>
 </template>
 
@@ -221,18 +212,5 @@ onUnmounted(() => {
     font-size: 1.3rem;
   }
 
-  &__footer {
-    padding: 48px 24px 80px;
-    text-align: center;
-  }
-
-  &__back {
-    display: inline-block;
-    padding: 16px 32px;
-    background-color: #000;
-    color: #fff;
-    font-size: 1.4rem;
-    border-radius: 4px;
-  }
 }
 </style>

@@ -4,30 +4,9 @@
 <template>
   <section class="section">
     <h2>LINKS</h2>
-
-    <div class="item">
-      <nuxtLink to="/swiper" class="item__link">
-        SWIPER BANNER
-      </nuxtLink>
-    </div>
-
-    <div class="item">
-      <nuxtLink to="/splide" class="item__link">
-        SPLIDE BANNER
-      </nuxtLink>
-    </div>
-
-    <div class="item">
-      <nuxtLink to="/embla" class="item__link">
-        EMBLA CAROUSEL
-      </nuxtLink>
-    </div>
-
-    <div class="item">
-      <nuxtLink to="/fv-scroll" class="item__link">
-        FV SCROLL (SPLIDE + GSAP)
-      </nuxtLink>
-    </div>
+    <p class="section__lead">
+      各デモページへのリンクは画面下部のフッターから移動できます。
+    </p>
   </section>
 </template>
 
@@ -45,20 +24,12 @@ h2 {
   line-height: 1;
 }
 
-.item {
-  & + & {
-    margin-top: 20px;
-  }
-
-  &__link {
-    display: block;
-    width: 300px;
-    background-color: #000;
-    padding: 24px 16px;
-    color: #fff;
-    text-align: center;
-    line-height: 1;
-    margin: 0 auto;
-  }
+.section__lead {
+  margin: 0 auto;
+  max-width: 480px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  color: #555;
 }
 </style>

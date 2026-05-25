@@ -10,11 +10,7 @@
       <div class="container">
         <slot />
       </div>
-      <footer>
-        <p>
-          &copy; test site
-        </p>
-      </footer>
+      <AppFooter />
     </div>
   </div>
 </template>
@@ -55,25 +51,4 @@ header {
   margin-top: 60px;
 }
 
-footer {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top:  auto;
-  padding: 0;
-  height: 100px;
-  background-color: gray;
-  color: #fff;
-
-
-  p {
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-  }
-}
 </style>
