@@ -53,6 +53,7 @@ function isNavActive(to: string): boolean {
   padding: 32px 20px 40px;
   background-color: gray;
   color: #fff;
+  box-sizing: border-box;
 
   &__nav {
     max-width: 1200px;
