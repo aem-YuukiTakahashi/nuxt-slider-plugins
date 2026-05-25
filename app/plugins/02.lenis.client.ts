@@ -13,6 +13,8 @@ export default defineNuxtPlugin(() => {
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
     smoothWheel: true,
+    // 内部リンク遷移時に慣性スクロールを止め、Nuxt の scrollBehavior と競合しないようにする
+    stopInertiaOnNavigate: true,
   })
 
   lenis.on('scroll', ScrollTrigger.update)
