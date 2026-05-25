@@ -13,22 +13,54 @@ const fvScrollRef = ref<HTMLElement | null>(null)
 const fvPinRef = ref<HTMLElement | null>(null)
 const fvInnerRef = ref<HTMLElement | null>(null)
 
+/** ScrollTrigger 準備完了後に FV を表示する（scrollTo(0) はバック時の位置復元と競合するため使わない） */
+const isFvReady = ref(false)
+
 /** ScrollTrigger / Lenis 再計算用 */
 const refreshScroll = () => {
   ScrollTrigger.refresh()
 }
 
 let gsapContext: gsap.Context | null = null
+let fvTimeline: gsap.core.Timeline | null = null
 
-onMounted(async () => {
-  await nextTick()
+/**
+ * Nuxt の scrollBehavior / Lenis がスクロール位置を確定するまで待つ。
+ * onMounted 直後は前ページの scroll が残っていることがある。
+ */
+function waitForRouteScrollSettled(): Promise<void> {
+  const nuxtApp = useNuxtApp()
 
-  if (!fvScrollRef.value || !fvPinRef.value || !fvInnerRef.value) {
-    return
-  }
+  return new Promise((resolve) => {
+    let settled = false
+    const finish = () => {
+      if (settled) return
+      settled = true
+      // scrollBehavior 適用後に Lenis / ScrollTrigger が追いつくまで 2 フレーム待つ
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => resolve())
+      })
+    }
+
+    nuxtApp.hooks.hookOnce('page:finish', finish)
+    // page:finish が hook 登録より先に終わった場合のセーフティ（通常は page:finish が先に走る）
+    setTimeout(finish, 500)
+  })
+}
+
+/** scrub の遅延を経ず、現在の scroll に合わせてタイムライン progress を即時同期する */
+function syncFvTimelineProgress() {
+  const st = fvTimeline?.scrollTrigger
+  if (!st || !fvTimeline) return
+  st.update()
+  fvTimeline.progress(st.progress, false)
+}
+
+function initFvScrollAnimation() {
+  if (!fvScrollRef.value || !fvPinRef.value || !fvInnerRef.value) return
 
   gsapContext = gsap.context(() => {
-    gsap.timeline({
+    fvTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: fvScrollRef.value,
         start: 'top top',
@@ -51,17 +83,40 @@ onMounted(async () => {
           height: '100vh',
           borderRadius: 0,
           ease: 'none',
+          immediateRender: false,
         },
       )
   }, fvScrollRef.value)
 
-  refreshScroll()
+  ScrollTrigger.refresh(true)
+  syncFvTimelineProgress()
+}
+
+onMounted(async () => {
+  isFvReady.value = false
+  await nextTick()
+
+  if (!fvScrollRef.value || !fvPinRef.value || !fvInnerRef.value) {
+    isFvReady.value = true
+    return
+  }
+
+  await waitForRouteScrollSettled()
+  initFvScrollAnimation()
   window.addEventListener('resize', refreshScroll)
+
+  requestAnimationFrame(() => {
+    syncFvTimelineProgress()
+    isFvReady.value = true
+  })
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', refreshScroll)
   gsapContext?.revert()
+  gsapContext = null
+  fvTimeline = null
+  isFvReady.value = false
 })
 </script>
 
@@ -80,6 +135,7 @@ onUnmounted(() => {
         <div
           ref="fvInnerRef"
           class="fv-page__inner js-gsap-fv-inner"
+          :class="{ 'fv-page__inner--ready': isFvReady }"
         >
           <FvHeroSplide />
         </div>
@@ -144,9 +200,19 @@ onUnmounted(() => {
 
   &__inner {
     position: relative;
+    // ScrollTrigger fromTo の from と同値（マウント前のチラつき防止）
+    width: 72%;
+    height: 52vh;
+    border-radius: 50px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     will-change: width, height, border-radius;
+    // 初期化完了まで非表示（GSAP が誤った progress を描画するのを隠す）
+    visibility: hidden;
+
+    &--ready {
+      visibility: visible;
+    }
 
     // Splide ルートに親の高さを渡す
     :deep(.fv-hero-splide) {
