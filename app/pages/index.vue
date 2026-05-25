@@ -22,6 +22,12 @@
         EMBLA CAROUSEL
       </nuxtLink>
     </div>
+
+    <div class="item">
+      <nuxtLink to="/fv-scroll" class="item__link">
+        FV SCROLL (SPLIDE + GSAP)
+      </nuxtLink>
+    </div>
   </section>
 </template>
 
