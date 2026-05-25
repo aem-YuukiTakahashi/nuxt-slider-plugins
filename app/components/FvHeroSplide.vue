@@ -62,21 +62,35 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
 
+  // Splide 内部まで高さを伝播（fade でも領域いっぱいに表示）
+  :deep(.splide),
+  :deep(.splide__slider),
+  :deep(.splide__track),
+  :deep(.splide__list),
+  :deep(.splide__slide) {
+    width: 100%;
+    height: 100%;
+  }
+
   &__slider {
     width: 100%;
     height: 100%;
   }
 
   &__slide {
-    width: 100%;
-    height: 100%;
+    position: relative;
+    overflow: hidden;
   }
 
   &__img {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
+    max-width: none; // _base.scss の max-width: 100% を打ち消す
     object-fit: cover;
+    object-position: center;
   }
 
   :deep(.splide__pagination) {

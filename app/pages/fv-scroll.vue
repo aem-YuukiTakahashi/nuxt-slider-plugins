@@ -44,7 +44,7 @@ onMounted(async () => {
         {
           width: '72%',
           height: '52vh',
-          borderRadius: 12,
+          borderRadius: 50,
         },
         {
           width: '100%',
@@ -156,6 +156,12 @@ onUnmounted(() => {
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     will-change: width, height, border-radius;
+
+    // Splide ルートに親の高さを渡す
+    :deep(.fv-hero-splide) {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   &__section {
