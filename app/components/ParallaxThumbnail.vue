@@ -13,7 +13,6 @@
           :style="{ '--overscan': overscan }"
           loading="lazy"
           decoding="async"
-          @load="handleImageLoad"
         >
       </div>
     </div>
@@ -57,21 +56,13 @@ const props = withDefaults(
 )
 
 const root = ref<HTMLElement | null>(null)
-const { gsap, ScrollTrigger } = useGsap()
+const { gsap } = useGsap()
 
 /**
  * 枠より縦に大きくする量（%）。
  * parallax の移動量（±%）の約3倍を上下の余白として確保する
  */
 const overscan = computed(() => `${props.parallax * 3}%`)
-
-/**
- * 画像読み込み後に ScrollTrigger を再計算し、
- * レイアウト確定後のパララックス位置ずれを防ぐ
- */
-function handleImageLoad() {
-  ScrollTrigger?.refresh()
-}
 
 useGsapContext(root, () => {
   gsap.fromTo(
