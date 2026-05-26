@@ -19,15 +19,62 @@
     >
       <strong>14 — マスクスライド</strong>：各行が横長の枠に収まり、下からスッと押し上げられるように現れます（切り抜き・シャッター感）。<kbd>Enter</kbd> で改行、「適用して再生」で反映。
     </p>
-
-    <!-- two-tone-split -->
-    <h2
-      v-if="usesTwoTone"
-      ref="headingRef"
-      class="gsap-heading-demo__title js-gsap-heading"
+    <p
+      v-else-if="variant === 'glitch-rich'"
+      class="gsap-heading-demo__note"
     >
-      <span class="js-gsap-tone-first">{{ twoToneParts.first }}</span><span class="js-gsap-tone-second">{{ twoToneParts.second }}</span>
-    </h2>
+      <strong>25 — DOM グリッチ</strong>：Canvas 不使用。GSAP で横帯の流れ（flowLine）・帯の水平ずれ（shiftLine）・RGB ずれ（shiftRGB）・矩形の飛び（scat）を再現（<a href="https://codepen.io/tksiiii/pen/xdQgJX" target="_blank" rel="noopener noreferrer">CodePen 参考</a> の近似）。
+    </p>
+
+    <!-- glitch-rich: DOM レイヤー（Canvas なし） -->
+    <div
+      v-if="usesGlitchStack"
+      ref="glitchWrapRef"
+      class="glitch-rich"
+    >
+      <h2
+        ref="headingRef"
+        class="gsap-heading-demo__title glitch-rich__heading js-gsap-heading"
+      >
+        {{ headingText }}
+      </h2>
+
+      <div
+        class="glitch-rich__flow js-gsap-glitch-flow js-gsap-glitch-layer"
+        aria-hidden="true"
+      >
+        <span class="gsap-heading-demo__title glitch-rich__text glitch-rich__text--r js-gsap-glitch-rgb js-gsap-glitch-copy">{{ headingText }}</span>
+        <span class="gsap-heading-demo__title glitch-rich__text js-gsap-glitch-copy">{{ headingText }}</span>
+        <span class="gsap-heading-demo__title glitch-rich__text glitch-rich__text--c js-gsap-glitch-rgb js-gsap-glitch-copy">{{ headingText }}</span>
+      </div>
+
+      <div
+        v-for="i in glitchRichSliceIndexes"
+        :key="`slice-${i}`"
+        class="glitch-rich__slice js-gsap-glitch-slice js-gsap-glitch-layer"
+        aria-hidden="true"
+      >
+        <span class="gsap-heading-demo__title glitch-rich__text glitch-rich__slice-inner js-gsap-glitch-slice-inner js-gsap-glitch-copy">{{ headingText }}</span>
+      </div>
+
+      <span
+        class="gsap-heading-demo__title glitch-rich__text glitch-rich__text--r glitch-rich__rgb js-gsap-glitch-rgb js-gsap-glitch-layer js-gsap-glitch-copy"
+        aria-hidden="true"
+      >{{ headingText }}</span>
+      <span
+        class="gsap-heading-demo__title glitch-rich__text glitch-rich__text--c glitch-rich__rgb js-gsap-glitch-rgb js-gsap-glitch-layer js-gsap-glitch-copy"
+        aria-hidden="true"
+      >{{ headingText }}</span>
+
+      <div
+        v-for="i in glitchRichScatIndexes"
+        :key="`scat-${i}`"
+        class="glitch-rich__scat js-gsap-glitch-scat js-gsap-glitch-layer"
+        aria-hidden="true"
+      >
+        <span class="gsap-heading-demo__title glitch-rich__text glitch-rich__scat-inner js-gsap-glitch-scat-inner js-gsap-glitch-copy">{{ headingText }}</span>
+      </div>
+    </div>
 
     <!-- accent-bar -->
     <div
@@ -160,25 +207,6 @@
       </div>
 
       <div
-        v-for="field in colorFields"
-        :key="field.key"
-        class="gsap-heading-demo__param"
-      >
-        <label
-          class="gsap-heading-demo__param-label"
-          :for="`${variant}-${field.key}`"
-        >
-          {{ field.label }}
-        </label>
-        <input
-          :id="`${variant}-${field.key}`"
-          v-model="params[field.key]"
-          class="gsap-heading-demo__param-color"
-          type="color"
-        >
-      </div>
-
-      <div
         v-for="field in visibleNumberFields"
         :key="field.key"
         class="gsap-heading-demo__param"
@@ -248,13 +276,15 @@
 
 <script setup lang="ts">
 import {
+  GLITCH_RICH_SCAT_COUNT,
+  GLITCH_RICH_SLICE_COUNT,
+} from '~/composables/headingAnimationGlitch'
+import {
   headingVariantsMultiline,
   headingVariantsWithAccent,
   headingVariantsWithBrackets,
   headingVariantsWithClip,
-  headingVariantsWithGradient,
-  headingVariantsWithOutline,
-  headingVariantsWithTwoTone,
+  headingVariantsWithGlitchStack,
   headingVariantsWithUnderline,
   type HeadingAnimationVariant,
 } from '~/constants/headingAnimationDemos'
@@ -262,10 +292,8 @@ import { createGsapHeadingAnimation } from '~/composables/useGsapHeadingAnimatio
 import {
   defaultHeadingAnimationParams,
   getVisibleParamKeys,
-  headingAnimationColorFields,
   headingAnimationEaseOptions,
   headingAnimationParamFields,
-  usesColorParamControls,
   type HeadingAnimationParamKey,
 } from '~/constants/headingAnimationParams'
 import { setHeadingTextWithLineBreaks } from '~/utils/headingTextLines'
@@ -283,6 +311,10 @@ const underlineRef = ref<HTMLElement | null>(null)
 const accentRef = ref<HTMLElement | null>(null)
 const bracketLeftRef = ref<HTMLElement | null>(null)
 const bracketRightRef = ref<HTMLElement | null>(null)
+const glitchWrapRef = ref<HTMLElement | null>(null)
+
+const glitchRichSliceIndexes = Array.from({ length: GLITCH_RICH_SLICE_COUNT }, (_, i) => i)
+const glitchRichScatIndexes = Array.from({ length: GLITCH_RICH_SCAT_COUNT }, (_, i) => i)
 
 const { gsap, ScrollTrigger } = useGsap()
 
@@ -298,14 +330,8 @@ const usesAccent = computed(() =>
 const usesBrackets = computed(() =>
   (headingVariantsWithBrackets as readonly string[]).includes(props.variant),
 )
-const usesTwoTone = computed(() =>
-  (headingVariantsWithTwoTone as readonly string[]).includes(props.variant),
-)
-const usesGradient = computed(() =>
-  (headingVariantsWithGradient as readonly string[]).includes(props.variant),
-)
-const usesOutline = computed(() =>
-  (headingVariantsWithOutline as readonly string[]).includes(props.variant),
+const usesGlitchStack = computed(() =>
+  (headingVariantsWithGlitchStack as readonly string[]).includes(props.variant),
 )
 
 const usesMultilineTitle = computed(() =>
@@ -314,19 +340,7 @@ const usesMultilineTitle = computed(() =>
 
 const headingTitleClasses = computed(() => ({
   'gsap-heading-demo__title--multiline': usesMultilineTitle.value,
-  'gsap-heading-demo__title--gradient': usesGradient.value,
-  'gsap-heading-demo__title--outline': usesOutline.value,
 }))
-
-const twoToneParts = computed(() => {
-  const text = headingText.value
-  const mid = Math.ceil(text.length / 2) || 1
-  return { first: text.slice(0, mid), second: text.slice(mid) }
-})
-
-const colorFields = computed(() =>
-  usesColorParamControls(props.variant) ? headingAnimationColorFields : [],
-)
 
 /** 見出しの初期テキスト */
 function getDefaultHeadingText(): string {
@@ -335,12 +349,6 @@ function getDefaultHeadingText(): string {
   }
   if (props.variant === 'line-mask') {
     return 'Mask Line One\nMask Line Two\nMask Line Three'
-  }
-  if (props.variant === 'line-wipe-color') {
-    return 'Wipe Line One\nWipe Line Two\nWipe Line Three'
-  }
-  if (props.variant === 'line-color-stagger') {
-    return 'Color Line One\nColor Line Two\nColor Line Three'
   }
   return props.title
 }
@@ -360,7 +368,7 @@ const visibleNumberFields = computed(() => {
     | 'blur'
     | 'scrambleSpeed'
     | 'trackingEm' => {
-    return !['ease', 'fromColor', 'toColor', 'accentColor'].includes(k)
+    return k !== 'ease'
   })
   return headingAnimationParamFields.filter(f => keys.includes(f.key))
 })
@@ -400,6 +408,7 @@ useGsapContext(root, () => {
       accent: accentRef.value,
       bracketLeft: bracketLeftRef.value,
       bracketRight: bracketRightRef.value,
+      glitchWrap: glitchWrapRef.value,
     },
     {
       variant: props.variant,
@@ -414,8 +423,17 @@ onUnmounted(() => {
 })
 
 function syncHeadingToDom() {
-  if (!headingRef.value || !usesMultilineTitle.value) return
-  setHeadingTextWithLineBreaks(headingRef.value, headingText.value)
+  if (!headingRef.value) return
+  if (usesMultilineTitle.value) {
+    setHeadingTextWithLineBreaks(headingRef.value, headingText.value)
+    return
+  }
+  headingRef.value.textContent = headingText.value
+  if (usesGlitchStack.value && glitchWrapRef.value) {
+    glitchWrapRef.value.querySelectorAll('.js-gsap-glitch-copy').forEach((el) => {
+      el.textContent = headingText.value
+    })
+  }
 }
 
 function applyAndReplay() {
@@ -522,21 +540,89 @@ function resetParams() {
   white-space: pre-line;
 }
 
-.gsap-heading-demo__title--gradient,
-.gsap-heading-demo__title--outline {
+/* #26 — DOM グリッチ（Canvas なし） */
+.glitch-rich {
+  position: relative;
   display: inline-block;
+  max-width: 100%;
 }
 
-.gsap-heading-demo__param-color {
+.glitch-rich__heading {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+}
+
+.glitch-rich__text {
   display: block;
+  margin: 0;
+  color: #18181b;
+  white-space: pre-wrap;
+}
+
+.glitch-rich__flow .glitch-rich__text {
+  position: absolute;
+  inset: 0;
+}
+
+.glitch-rich__text--r {
+  color: #ff2a6d;
+}
+
+.glitch-rich__text--c {
+  color: #05d9e8;
+}
+
+.glitch-rich__flow,
+.glitch-rich__slice,
+.glitch-rich__rgb,
+.glitch-rich__scat {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.glitch-rich__flow {
+  z-index: 2;
+}
+
+.glitch-rich__slice {
+  z-index: 2;
+}
+
+.glitch-rich__slice-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-  height: 2.25rem;
-  margin-top: 0.25rem;
-  padding: 0.15rem;
-  border: 1px solid #d4d4d8;
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
+}
+
+.glitch-rich__rgb {
+  z-index: 1;
+  mix-blend-mode: screen;
+}
+
+.glitch-rich__rgb.glitch-rich__text--r {
+  z-index: 1;
+}
+
+.glitch-rich__rgb.glitch-rich__text--c {
+  z-index: 1;
+}
+
+.glitch-rich__scat {
+  z-index: 2;
+  inset: auto;
+  overflow: hidden;
+}
+
+.glitch-rich__scat-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .gsap-heading-demo__underline {
