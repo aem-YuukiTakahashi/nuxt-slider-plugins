@@ -84,7 +84,8 @@ useGsapContext(root, () => {
         trigger: root.value,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        /** fv-scroll と同じ（秒）。軽い追従ラグでスクロールとの同期を滑らかにする */
+        scrub: 0.6,
       },
     },
   )
