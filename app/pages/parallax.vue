@@ -1,14 +1,6 @@
 <template>
   <main class="page">
     <header class="page__header">
-      <p class="page__compare">
-        <NuxtLink
-          class="page__jump"
-          to="/parallax-native"
-        >
-          Lenis 無効ページで比較（ネイティブスクロール）
-        </NuxtLink>
-      </p>
       <h1 class="page__title">
         Parallax Thumbnail
       </h1>
@@ -67,17 +59,6 @@ import {
 
 .page__header {
   margin-bottom: 4rem;
-}
-
-.page__compare {
-  margin: 0 0 1.25rem;
-}
-
-.page__jump {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #2563eb;
-  text-underline-offset: 2px;
 }
 
 .page__title {

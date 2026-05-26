@@ -13,7 +13,6 @@ export const siteNavLinks: SiteNavLink[] = [
   { to: '/embla', label: 'EMBLA CAROUSEL' },
   { to: '/fv-scroll', label: 'FV SCROLL (SPLIDE + GSAP)' },
   { to: '/parallax', label: 'Parallax Thumbnail' },
-  { to: '/parallax-native', label: 'Parallax（Lenis オフ）' },
   { to: '/cards', label: 'Card List' },
   { to: '/list', label: 'Text List' },
 ]

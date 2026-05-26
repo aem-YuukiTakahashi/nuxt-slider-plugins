@@ -1,5 +1,5 @@
 /**
- * Parallax デモページ（通常版 / Lenis オフ比較版）で共有するギャラリー項目。
+ * Parallax デモページで使うギャラリー項目。
  */
 export const parallaxLandscapeItems = [
   { src: 'https://picsum.photos/seed/landscape-1/800/600', alt: '横長サンプル 1', caption: '4:3 — Sample 1' },
