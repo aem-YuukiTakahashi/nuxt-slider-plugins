@@ -1,19 +1,24 @@
 <template>
   <main class="page">
     <header class="page__header">
-      <p class="page__compare">
+      <p
+        class="page__badge"
+        role="status"
+      >
+        Lenis はこのページでは無効です（ブラウザのネイティブスクロールのみ）。
         <NuxtLink
           class="page__jump"
-          to="/parallax-native"
+          to="/parallax"
         >
-          Lenis 無効ページで比較（ネイティブスクロール）
+          Lenis 有効のページへ
         </NuxtLink>
       </p>
       <h1 class="page__title">
-        Parallax Thumbnail
+        Parallax Thumbnail（Lenis オフ）
       </h1>
       <p class="page__lead">
-        4:3（横長）と 3:4（縦長）のサムネイルに、ScrollTrigger 連動のパララックスを適用
+        コンテンツは <code>/parallax</code> と同一です。
+        iOS などでカクつきを比較する場合、このページと通常ページを交互に確認してください。
       </p>
     </header>
 
@@ -69,14 +74,22 @@ import {
   margin-bottom: 4rem;
 }
 
-.page__compare {
+.page__badge {
   margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #0f766e;
+  background-color: #f0fdfa;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #115e59;
 }
 
 .page__jump {
-  font-size: 0.9375rem;
+  display: inline-block;
+  margin-left: 0.25rem;
   font-weight: 600;
-  color: #2563eb;
+  color: #0f766e;
   text-underline-offset: 2px;
 }
 
@@ -90,6 +103,13 @@ import {
   margin: 0;
   font-size: 1.125rem;
   color: #555;
+}
+
+.page__lead code {
+  font-size: 0.95em;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background: #f4f4f5;
 }
 
 .page__section {
