@@ -13,6 +13,7 @@ export const siteNavLinks: SiteNavLink[] = [
   { to: '/embla', label: 'EMBLA CAROUSEL' },
   { to: '/fv-scroll', label: 'FV SCROLL (SPLIDE + GSAP)' },
   { to: '/parallax', label: 'Parallax Thumbnail' },
+  { to: '/heading-animations', label: 'Heading Animations (GSAP)' },
   { to: '/cards', label: 'Card List' },
   { to: '/list', label: 'Text List' },
 ]
