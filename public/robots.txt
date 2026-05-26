@@ -1,2 +1,3 @@
-User-Agent: *
-Disallow:
+# デモサイトのためクロール・インデックスを拒否
+User-agent: *
+Disallow: /nuxt-slider-plugins/
