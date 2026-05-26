@@ -11,7 +11,6 @@
           :src="src"
           :alt="alt"
           :style="{ '--overscan': overscan }"
-          loading="lazy"
           decoding="async"
         >
       </div>
