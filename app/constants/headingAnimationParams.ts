@@ -1,5 +1,4 @@
 import type { HeadingAnimationVariant } from '~/constants/headingAnimationDemos'
-import { headingVariantsWithColorParams } from '~/constants/headingAnimationDemos'
 
 /** 見出しアニメーションの調整可能パラメータ */
 export interface HeadingAnimationParams {
@@ -11,12 +10,6 @@ export interface HeadingAnimationParams {
   blur: number
   scrambleSpeed: number
   trackingEm: number
-  /** 開始色 */
-  fromColor: string
-  /** 終了色（本文色） */
-  toColor: string
-  /** アクセント色 */
-  accentColor: string
 }
 
 export const defaultHeadingAnimationParams: HeadingAnimationParams = {
@@ -28,9 +21,6 @@ export const defaultHeadingAnimationParams: HeadingAnimationParams = {
   blur: 14,
   scrambleSpeed: 0.35,
   trackingEm: 0.4,
-  fromColor: '#a1a1aa',
-  toColor: '#18181b',
-  accentColor: '#2563eb',
 }
 
 export const headingAnimationEaseOptions = [
@@ -64,12 +54,6 @@ export const headingAnimationParamFields: HeadingAnimationParamField[] = [
   { key: 'trackingEm', label: 'Tracking', min: 0, max: 1, step: 0.05, unit: 'em' },
 ]
 
-export const headingAnimationColorFields = [
-  { key: 'fromColor' as const, label: 'From color' },
-  { key: 'toColor' as const, label: 'To color' },
-  { key: 'accentColor' as const, label: 'Accent color' },
-]
-
 const STAGGER_VARIANTS: HeadingAnimationVariant[] = [
   'char-stagger',
   'word-stagger',
@@ -77,10 +61,7 @@ const STAGGER_VARIANTS: HeadingAnimationVariant[] = [
   'line-mask',
   'char-random',
   'char-wave',
-  'char-color-stagger',
-  'char-scale-color',
-  'glitch',
-  'line-color-stagger',
+  'glitch-rich',
 ]
 
 const DISTANCE_VARIANTS: HeadingAnimationVariant[] = [
@@ -103,12 +84,7 @@ const DISTANCE_VARIANTS: HeadingAnimationVariant[] = [
   'accent-bar',
   'bracket-reveal',
   'char-wave',
-  'word-highlight',
-  'line-wipe-color',
-  'underline-color-reveal',
-  'bracket-accent-color',
-  'char-scale-color',
-  'glitch',
+  'glitch-rich',
 ]
 
 export function getVisibleParamKeys(variant: HeadingAnimationVariant): HeadingAnimationParamKey[] {
@@ -120,7 +96,7 @@ export function getVisibleParamKeys(variant: HeadingAnimationVariant): HeadingAn
   if (DISTANCE_VARIANTS.includes(variant)) {
     keys.push('distance')
   }
-  if (variant === 'blur-in' || variant === 'blur-sharp-color') {
+  if (variant === 'blur-in') {
     keys.push('blur')
   }
   if (variant === 'scramble-text') {
@@ -129,15 +105,8 @@ export function getVisibleParamKeys(variant: HeadingAnimationVariant): HeadingAn
   if (variant === 'tracking-expand') {
     keys.push('trackingEm')
   }
-  if ((headingVariantsWithColorParams as readonly string[]).includes(variant)) {
-    keys.push('fromColor', 'toColor', 'accentColor')
-  }
 
   return keys
-}
-
-export function usesColorParamControls(variant: HeadingAnimationVariant): boolean {
-  return (headingVariantsWithColorParams as readonly string[]).includes(variant)
 }
 
 export function mergeHeadingAnimationParams(

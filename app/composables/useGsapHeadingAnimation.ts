@@ -9,9 +9,9 @@ import {
 } from '~/constants/headingAnimationParams'
 import { getHeadingPlainText, setHeadingTextWithLineBreaks } from '~/utils/headingTextLines'
 import {
-  applyColorVariantAnimation,
-  isColorVariant,
-} from '~/composables/headingAnimationColorVariants'
+  applyGlitchVariantAnimation,
+  isGlitchVariant,
+} from '~/composables/headingAnimationGlitch'
 
 export interface GsapHeadingAnimationTargets {
   root: HTMLElement
@@ -21,6 +21,8 @@ export interface GsapHeadingAnimationTargets {
   accent?: HTMLElement | null
   bracketLeft?: HTMLElement | null
   bracketRight?: HTMLElement | null
+  /** #25 glitch-rich の DOM ラッパー */
+  glitchWrap?: HTMLElement | null
 }
 
 export interface GsapHeadingAnimationOptions {
@@ -45,14 +47,18 @@ export function createGsapHeadingAnimation(
   targets: GsapHeadingAnimationTargets,
   options: GsapHeadingAnimationOptions,
 ): GsapHeadingAnimationHandle | null {
-  const { root, heading, clipInner, underline, accent, bracketLeft, bracketRight } = targets
+  const { root, heading, clipInner, underline, accent, bracketLeft, bracketRight, glitchWrap } = targets
   const { variant, scrollTrigger = true } = options
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const glitchLayers = glitchWrap
+      ? [...glitchWrap.querySelectorAll<HTMLElement>('.js-gsap-glitch-layer')]
+      : []
     gsap.set(
-      [heading, clipInner, underline, accent, bracketLeft, bracketRight].filter(Boolean),
+      [heading, clipInner, underline, accent, bracketLeft, bracketRight, ...glitchLayers].filter(Boolean),
       { clearProps: 'all' },
     )
+    gsap.set(heading, { opacity: 1 })
     return null
   }
 
@@ -83,18 +89,18 @@ export function createGsapHeadingAnimation(
     const d = p.distance
     const subDuration = Math.max(0.2, p.duration * 0.65)
 
-    if (isColorVariant(variant)) {
-      gsap.set(heading, {
+    if (isGlitchVariant(variant)) {
+      const glitchLayers = glitchWrap
+        ? [...glitchWrap.querySelectorAll<HTMLElement>('.js-gsap-glitch-layer')]
+        : []
+      gsap.set([heading, ...glitchLayers], {
         clearProps:
-          'color,opacity,filter,textShadow,fontWeight,webkitTextStroke,webkitTextStrokeWidth,backgroundImage,backgroundPosition,backgroundSize,backgroundClip,webkitBackgroundClip',
+          'opacity,filter,textShadow,x,y,skewX,scaleX,scaleY,clipPath,transform,top,left,width,height',
       })
-      applyColorVariantAnimation(variant, tl, {
+      applyGlitchVariantAnimation(variant, tl, {
         gsap,
         heading,
-        clipInner,
-        underline,
-        bracketLeft,
-        bracketRight,
+        glitchWrap,
         p,
         distance: d,
         subDuration,
