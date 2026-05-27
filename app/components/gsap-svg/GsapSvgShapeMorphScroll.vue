@@ -60,8 +60,6 @@ const activeColor = ref(gsapSvgMorphShapes[0].color)
 
 const { gsap, ScrollTrigger } = useGsap()
 
-let morphTween: ReturnType<GsapCore['to']> | null = null
-
 /**
  * セクション要素の ref をインデックス付きで保持する
  */
@@ -69,28 +67,33 @@ function setSectionRef(el: Element | ComponentPublicInstance | null, index: numb
   sectionRefs.value[index] = el instanceof HTMLElement ? el : null
 }
 
-/**
- * 指定シェイプの d 属性へモーフし、ラベル・色を同期する
- */
-function morphToShape(shapeIndex: number) {
-  const shape = gsapSvgMorphShapes[shapeIndex]
-  const path = morphPathRef.value
-  if (!path || !gsap || !shape) return
+useGsapContext(root, (ctx) => {
+  if (!ScrollTrigger || !gsap) return
 
-  activeLabel.value = shape.label
-  activeColor.value = shape.color
+  let morphTween: ReturnType<GsapCore['to']> | null = null
 
-  morphTween?.kill()
-  morphTween = gsap.to(path, {
-    attr: { d: shape.d },
-    duration: 0.85,
-    ease: 'power2.inOut',
-    overwrite: 'auto',
-  })
-}
+  /**
+   * 指定シェイプの d 属性へモーフし、ラベル・色を同期する。
+   * ScrollTrigger コールバック内で生成する tween は ctx.add で登録し、
+   * コンポーネント破棄時の revert() で確実に kill する。
+   */
+  function morphToShape(shapeIndex: number) {
+    const shape = gsapSvgMorphShapes[shapeIndex]
+    const path = morphPathRef.value
+    if (!path || !shape) return
 
-useGsapContext(root, () => {
-  if (!ScrollTrigger) return
+    activeLabel.value = shape.label
+    activeColor.value = shape.color
+
+    morphTween?.kill()
+    morphTween = gsap.to(path, {
+      attr: { d: shape.d },
+      duration: 0.85,
+      ease: 'power2.inOut',
+      overwrite: 'auto',
+    })
+    ctx.add(morphTween)
+  }
 
   gsapSvgMorphShapes.forEach((shape, index) => {
     const section = sectionRefs.value[index]
