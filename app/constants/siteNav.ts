@@ -14,6 +14,7 @@ export const siteNavLinks: SiteNavLink[] = [
   { to: '/fv-scroll', label: 'FV SCROLL (SPLIDE + GSAP)' },
   { to: '/parallax', label: 'Parallax Thumbnail' },
   { to: '/heading-animations', label: 'Heading Animations (GSAP)' },
+  { to: '/gsap-svg', label: 'GSAP + SVG' },
   { to: '/cards', label: 'Card List' },
   { to: '/list', label: 'Text List' },
 ]
