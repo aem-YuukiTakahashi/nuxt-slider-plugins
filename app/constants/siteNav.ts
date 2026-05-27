@@ -17,4 +17,5 @@ export const siteNavLinks: SiteNavLink[] = [
   { to: '/gsap-svg', label: 'GSAP + SVG' },
   { to: '/cards', label: 'Card List' },
   { to: '/list', label: 'Text List' },
+  { to: '/lp', label: 'GSAP LP' },
 ]
